@@ -56,17 +56,18 @@ School of Information and Communication Engineering, Beijing University of Posts
 
 ## OverView
 
+<img src="../images/Survey/deepFR_systems.png" width="1800px" height="500px">
+
 * **Terminology**
 
   * Face verification
     * computes onte-to-one similarity
+      
   * Face identification
     * computes one-to-many similarity to determine the specific identity of face.
       
 
 * **Components of Face Recognition**
-
-  
   $$
   M[F(P_i(I_i)), F(P_j(I_j))]
   $$
@@ -77,3 +78,32 @@ School of Information and Communication Engineering, Beijing University of Posts
   * $$F$$ : denotes feature extraction
   * $$M$$ : face matching algorithm. 
 
+
+
+* **Face Processing**
+  * One-to-many augmentation
+    * Generating many patches or images of the pose variability from a single image to enable deep networks to learn pose-invariant representations.
+  * Many-to-one normalization
+    * Recovering the canonical view of face images from one or many images of a non frontal view.
+      
+* **Deep Feature Extraction**
+  * Network Architecture
+    * AlexNet
+    * VGGNet
+    * GoogleNet
+    * ResNet
+    * SENet
+      
+* **Loss Function**
+  * For Face Recognition, when intra variations could be larger than inter-differences, the softmax loss is not sufficiently effective for Face Recognition.
+  * Euclidean-distance-based loss
+    * Compressing intra variance and enlarging inter-variance based on Euclidean distance.
+  * Angular/cosine-margin-based loss
+    * Learning discriminative face features in terms of angular similarity.
+  * Softmax loss and its variations
+    * Directly using softmax loss or modifying it to improve performance.
+      
+* **Face Matching**
+  * Once the deep features are extracted, most methods directly calculate the similarity between two features using cosine distance or L2 distance.
+  * Then, the nearest neighbor(NN) and threshold comparison are used for both identification and verification tasks.
+  * Spare-representation-based classifier(SRC) perform the face matching efficiently and accurately.
