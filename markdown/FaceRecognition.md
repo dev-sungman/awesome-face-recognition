@@ -51,3 +51,29 @@ School of Information and Communication Engineering, Beijing University of Posts
       <img src="../images/Survey/representation.png" width="1800px" height="500px">
     
     * DeepFace (2014) : achieved the state-of-the-art accuracy on the famous LFW benchmark, approaching human performance on the unconstrained condition.
+
+
+
+## OverView
+
+* **Terminology**
+
+  * Face verification
+    * computes onte-to-one similarity
+  * Face identification
+    * computes one-to-many similarity to determine the specific identity of face.
+      
+
+* **Components of Face Recognition**
+
+  
+  $$
+  M[F(P_i(I_i)), F(P_j(I_j))]
+  $$
+  
+
+  * $$I_i, I_j$$ : two face images.
+  * $$P$$ : stands for data processin to handle intra-personal variations.
+  * $$F$$ : denotes feature extraction
+  * $$M$$ : face matching algorithm. 
+
