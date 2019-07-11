@@ -1,8 +1,9 @@
 # Recent Face Recognition
 
-For implementation of recent face recognition papers.
+* For implementation of recent face recognition papers.
 
-Detailed paper review at 
+* Detailed paper review at https://chosungman.github.io/
+  
 
 ## Train Datasets
 
