@@ -62,7 +62,7 @@ School of Information and Communication Engineering, Beijing University of Posts
 
   * Face verification
     * computes onte-to-one similarity
-      
+    
   * Face identification
     * computes one-to-many similarity to determine the specific identity of face.
       
@@ -85,7 +85,7 @@ School of Information and Communication Engineering, Beijing University of Posts
     * Generating many patches or images of the pose variability from a single image to enable deep networks to learn pose-invariant representations.
   * Many-to-one normalization
     * Recovering the canonical view of face images from one or many images of a non frontal view.
-      
+  
 * **Deep Feature Extraction**
   * Network Architecture
     * AlexNet
@@ -93,7 +93,7 @@ School of Information and Communication Engineering, Beijing University of Posts
     * GoogleNet
     * ResNet
     * SENet
-      
+  
 * **Loss Function**
   * For Face Recognition, when intra variations could be larger than inter-differences, the softmax loss is not sufficiently effective for Face Recognition.
   * Euclidean-distance-based loss
@@ -102,8 +102,49 @@ School of Information and Communication Engineering, Beijing University of Posts
     * Learning discriminative face features in terms of angular similarity.
   * Softmax loss and its variations
     * Directly using softmax loss or modifying it to improve performance.
-      
+  
 * **Face Matching**
   * Once the deep features are extracted, most methods directly calculate the similarity between two features using cosine distance or L2 distance.
   * Then, the nearest neighbor(NN) and threshold comparison are used for both identification and verification tasks.
   * Spare-representation-based classifier(SRC) perform the face matching efficiently and accurately.
+
+
+
+## Evolution of Discriminative Loss Functions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
