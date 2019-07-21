@@ -26,8 +26,7 @@ def make_dataset(origin_dir, mask_dir, class_to_idx, extensions=None, is_valid_f
     if extensions is not None:
         def is_valid_file(x):
             return has_file_allowed_extension(x, extensions)
-    
-    # TODO: Need to optimization 
+
     for target in sorted(class_to_idx.keys()):
         origin_d = os.path.join(origin_dir, target)
         mask_d = os.path.join(mask_dir, target)
@@ -35,7 +34,6 @@ def make_dataset(origin_dir, mask_dir, class_to_idx, extensions=None, is_valid_f
         if not (os.path.isdir(origin_d) | os.path.isdir(mask_d)):
             continue
         for root, _, fnames in sorted(os.walk(origin_d)):
-            # below codelines are not best. 
             mask_root = root.split('/')[:-2]
             mask_root = '/'.join(mask_root) + '/gt/' + root.split('/')[-1]
             for name in sorted(fnames):
@@ -50,24 +48,24 @@ def make_dataset(origin_dir, mask_dir, class_to_idx, extensions=None, is_valid_f
 
 # if you want to training with binary mask, it will be used
 class FaceDataset(Dataset):
-    def __init__(self, train_root, mask_root=None, extensions=None, transform=None, is_valid_file=None):
-        self.train_root = train_root
+    def __init__(self, data_root, mask_root=None, extensions=None, transform=None, is_valid_file=None):
+        self.data_root = data_root
         self.mask_root = mask_root
 
         self.transform = transform
 
-        classes, class_to_idx = self._find_classes(self.train_root)
-        samples = make_dataset(self.train_root, self.mask_root, class_to_idx, extensions, is_valid_file)
+        classes, class_to_idx = self._find_classes(self.data_root)
+        samples = make_dataset(self.data_root, self.mask_root, class_to_idx, extensions, is_valid_file)
         
         if len(samples) == 0:
-            raise (RuntimeError("Found 0 files in subfolders of: " + self.train_root + "\n"
+            raise (RuntimeError("Found 0 files in subfolders of: " + self.data_root + "\n"
                 "Supported extensions are: " + ",".join(extensions)))
 
         self.classes = classes
         self.samples = samples
         
     def __len__(self):
-        return len(os.listdir(self.train_root))
+        return len(os.listdir(self.data_root))
 
     def _find_classes(self, dir):
         if sys.version_info >= (3, 5):

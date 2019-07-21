@@ -6,6 +6,8 @@ import os
 import argparse
 
 from src.utils import *
+from src.data_handler import FaceDataset
+from torchvision import transforms
 
 def parse_arguments(argv):
 
@@ -13,6 +15,7 @@ def parse_arguments(argv):
     # set up root for training dataset
     parser.add_argument('--train_root', type=str, default=None)
     # set up root for training dataset (masked)
+    # if you wnat to training with mask image, use this
     parser.add_argument('--mask_root', type=str, default=None)
     parser.add_argument('--epochs', type=int, default=None)
     parser.add_argument('--batch_size', type=int, default=None)
@@ -35,7 +38,15 @@ def main(args):
     make_dir(log_dir)
     
     # create dataset, dataloader
-    face_datasets =  
+    train_transform = transforms.Compose([
+        transforms.Resize(img_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+    
+    face_datasets = FaceDataset(train_root=args.train_root, mask_root=args.mask_root)
+    
 
     # train using trainer
 
