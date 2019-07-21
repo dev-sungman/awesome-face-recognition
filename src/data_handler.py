@@ -12,6 +12,21 @@ import os
 
 IMG_EXTENSIONS=('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
 
+def make_transforms(img_size):
+    train_data_transform = transforms.Compose([
+        transforms.Resize(img_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+
+    mask_data_transform = transforms.Compose([
+        transforms.Resize(img_size),
+        transforms.ToTensor(),
+        ])
+
+    return train_data_transform, mask_data_transform
+
 def has_file_allowed_extension(filename, extensions):
     return filename.lower().endswith(extensions)
 
