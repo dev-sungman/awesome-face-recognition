@@ -1,4 +1,5 @@
-import torch 
+import torch
+import torchvision
 import torch.nn as nn
 
 import sys
@@ -6,8 +7,7 @@ import os
 import argparse
 
 from src.utils import *
-from src.data_handler import FaceDataset
-from torchvision import transforms
+from src.data_handler import FaceDataset, FaceLoader
 
 def parse_arguments(argv):
 
@@ -37,16 +37,17 @@ def main(args):
     log_dir = args.save_root + '/log'
     make_dir(log_dir)
     
-    # create dataset, dataloader
-    train_transform = transforms.Compose([
-        transforms.Resize(img_size),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        ])
+    # create transform, dataset, dataloader
+    train_transform, mask_transform = make_transform([224,224])
+
+    if args.mask_root is None:
+        face_datasets = ImageFolder(self,train_root, train_transform)
+    else:
+        face_datasets = FaceDataset(args.train_root, args.mask_root, train_transform, mask_transform)
     
-    face_datasets = FaceDataset(train_root=args.train_root, mask_root=args.mask_root)
+    data_loader = FaceLoader(args.train_root, args.batch_size, face_datasets)
     
+    trainer = FaceTrainer(device, data_loader, log_dir, model_dir)
 
     # train using trainer
 

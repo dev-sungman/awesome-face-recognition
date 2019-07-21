@@ -18,12 +18,11 @@ from pathlib import Path
 from tqdm import tqdm
 
 class FaceTrainer:
-    def __init__(self, device, dataloader, batch_size, log_dir, model_dir, embedding_size=512):
+    def __init__(self, device, dataloader, log_dir, model_dir, embedding_size=512):
         self.step = 0
         self.device = device
         
         self.embedding_size = embedding_size
-        self.batch_size = batch_size
 
         self.train_loader, self.class_num = dataloader.get_loader()
         self.model_dir = model_dir

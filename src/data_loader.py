@@ -12,6 +12,22 @@ import os
 
 IMG_EXTENSIONS=('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
 
+def make_transforms(img_size):
+    train_data_transform = transforms.Compose([
+        transforms.Resize(img_size),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
+        ])
+
+    mask_data_transform = transforms.Compose([
+        transforms.Resize(img_size),
+        transforms.ToTensor(),
+        ])
+
+    return train_data_transform, mask_data_transform
+    
+
 def has_file_allowed_extension(filename, extensions):
     return filename.lower().endswith(extensions)
 
@@ -50,11 +66,12 @@ def make_dataset(origin_dir, mask_dir, class_to_idx, extensions=None, is_valid_f
 
 # if you want to training with binary mask, it will be used
 class FaceDataset(Dataset):
-    def __init__(self, train_root, mask_root=None, extensions=None, transform=None, is_valid_file=None):
+    def __init__(self, train_root, mask_root=None, train_transform=None, mask_transform=None, extensions=None, transform=None, is_valid_file=None):
         self.train_root = train_root
         self.mask_root = mask_root
 
-        self.transform = transform
+        self.train_transform = train_transform
+        self.mask_transform = mask_transform
 
         classes, class_to_idx = self._find_classes(self.train_root)
         samples = make_dataset(self.train_root, self.mask_root, class_to_idx, extensions, is_valid_file)
@@ -86,39 +103,22 @@ class FaceDataset(Dataset):
         image = Image.open(origin_path)
         mask = Image.open(mask_path)
 
-        if self.transform:
-            image = self.transform(image)
-            mask = self.transform(mask)
+        if self.train_transform:
+            image = self.train_transform(image)
+        if self.mask_transform:
+            mask = self.mask_transform(mask)
 
         sample = (image, mask, target)
-        
+     
         return sample
         
 
 class FaceLoader:
-    def __init__(self, data_root, batch_size, mask_root=None, shuffle=True, is_valid_file=None):
-        self.data_root = data_root
-        self.mask_root = mask_root
+    def __init__(self, batch_size, datasets, shuffle=True):
+
         self.batch_size = batch_size
         self.shuffle = shuffle
-        self.is_valid_file = is_valid_file
-
-    def get_loader(self, img_size=[112, 112]):
-        transform = transforms.Compose([
-            transforms.Resize(img_size),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-            ])
-
-        if self.mask_root is None:
-            datasets = ImageFolder(self.data_root, transform)
-        else:
-            datasets = FaceDataset(self.data_root, self.mask_root, IMG_EXTENSIONS if self.is_valid_file is None else None, transform=transform, is_valid_file=self.is_valid_file)
-
-        loader = DataLoader(datasets, batch_size=self.batch_size, num_workers=4, pin_memory=True, shuffle=True)
-
-        num_classes = len(datasets)
-
-        return loader, num_classes
-
+        
+        self.loader = DataLoader(datasets, batch_size=self.batch_size, num_workers=4, pin_memory=True, shuffle=True)
+        
+        self.num_classes = len(datasets)
