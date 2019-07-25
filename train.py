@@ -12,20 +12,28 @@ from src.data_handler import FaceDataset, FaceLoader
 def parse_arguments(argv):
 
     parser = argparse.ArgumentParser()
+
     # set up root for training dataset
     parser.add_argument('--train_root', type=str, default=None)
+
     # set up root for training dataset (masked)
     # if you wnat to training with mask image, use this
     parser.add_argument('--mask_root', type=str, default=None)
     parser.add_argument('--epochs', type=int, default=None)
     parser.add_argument('--batch_size', type=int, default=None)
+    parser.add_argument('--embedding_size', type=int, default=512)
+
     # set up root for saving model, log
     parser.add_argument('--save_root', type=str, default=None)
     parser.add_argument('--gpu_idx', type=int, default=0)
 
-    # set up training backbone
-    parser.add_argument('--backbone', type=str, default=None)
-
+    # set up training model backbone
+    # TODO: add more backbone network.
+    parser.add_argument('--backbone', type=str, default='vgg', choices=['vgg', 'resnet'])
+    
+    # set up training model head
+    # TODO: add more network head
+    parser.add_argument('--head', type=str, default='arcface', choices=['arcface'])
     return parser.parse_args(argv)
 
 def main(args):
@@ -50,7 +58,7 @@ def main(args):
     
     data_loader = FaceLoader(args.train_root, args.batch_size, face_datasets)
     
-    trainer = FaceTrainer(device, data_loader, backbone, head, log_dir, model_dir)
+    trainer = FaceTrainer(device, data_loader, backbone, head, log_dir, model_dir, args.embedding_size)
 
     # train using trainer
 

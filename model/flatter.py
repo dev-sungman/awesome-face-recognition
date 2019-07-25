@@ -17,6 +17,7 @@ class Flatter(nn.Module):
             self._initialize_weights()
 
     def forward(self, x):
+        assert x.shape[3] < 7, "Last feature map size must be larger than 7x7" 
         x = self.avgpool(x)
         x = self.conv(x)
         x = self.prelu(x)

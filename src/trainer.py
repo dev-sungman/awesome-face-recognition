@@ -1,5 +1,6 @@
 from model.vgg import vgg19
 from model.arcface import Arcface
+from model.flatter import Flatter
 from src.data_handler import FaceLoader
 
 import torch
@@ -27,6 +28,10 @@ class FaceTrainer:
         if backbone ='vgg':
             self.backbone = vgg19_bn(num_classes=self.class_num).to(self.device)
             self.backbone = nn.DataParallel(self.backbone)
+        
+
+        self.flatter = Flatter(embedding_size=embedding_size)
+        
         self.head = Arcface(num_classes = self.class_num).to(self.device)
 
         self.optimizer = optim.SGD(self.backbone.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
@@ -44,7 +49,8 @@ class FaceTrainer:
 
                 self.optimizer.zero_grad()
 
-                embeddings = self.backbone(imgs)
+                feature_map = self.backbone(imgs)
+                embeddings = self.flatter(feature_map)
                 thetas = self.head(embeddings, labels)
 
                 lossfunc = CrossEntropyLoss()
