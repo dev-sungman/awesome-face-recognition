@@ -23,6 +23,9 @@ def parse_arguments(argv):
     parser.add_argument('--save_root', type=str, default=None)
     parser.add_argument('--gpu_idx', type=int, default=0)
 
+    # set up training backbone
+    parser.add_argument('--backbone', type=str, default=None)
+
     return parser.parse_args(argv)
 
 def main(args):
@@ -47,7 +50,7 @@ def main(args):
     
     data_loader = FaceLoader(args.train_root, args.batch_size, face_datasets)
     
-    trainer = FaceTrainer(device, data_loader, log_dir, model_dir)
+    trainer = FaceTrainer(device, data_loader, backbone, head, log_dir, model_dir)
 
     # train using trainer
 

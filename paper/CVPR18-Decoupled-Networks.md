@@ -18,7 +18,6 @@ Georgia Institute of Technology, NVIDIA, Emory University, Tsinghua University, 
 
 * 기존 convolution 신경망의 $$<w,x> = w^Tx$$  는 intra-class variation 과 semantic difference(inter-class variation) 를 하나의 couple 형태로 측정하게 된다. 
   
-
 * 위의 결과처럼 couple 형태로 측정하게 되면 다음과 같은 질문에 대하여 알기 어려워진다. 2개의 샘플의 내적 결과값이 크다면, '2개의 샘플의 semantic/label difference 를 가진것인지?' 'large intra-class variation을 가진것인지?' 
   (즉, 같은 클래스 내부에서 분리가 된것인지 , 다른 클래스의 성격을 갖고 있는 것인지에 대한 판단이 어렵다)
 
@@ -31,7 +30,7 @@ Georgia Institute of Technology, NVIDIA, Emory University, Tsinghua University, 
   
 * $$\left\| w \right\| \left\| x \right\| \cos ({ { \theta  }_{ (w,x) } }) $$ 의 수식에서 $$h(\left\| w \right\| \left\| x \right\|)$$ 을 magnitude function,  $$ g({ \theta  }_{ (w,x) })$$  을 anuglar function 으로 정의한다.   이 때, $$ h(\left\| w \right\| \left\| x \right\|)$$  = $$\left\| w \right\| \left\| x \right\|$$  ,  $$ g({ \theta  }_{ (w,x) })$$ = $$\cos ({ { \theta  }_{ (w,x) } }) $$  을 나타낸다. 
   * manitude function 은 intra-class variation 을 나타내고, angular function 은 semantic difference 를 나타낸다.
-    
+  
 * Decoupling 관점에서 바라보면, 기존 CNN은 norm의 곱형태로 intra-class variation 을 선형적으로 모델링할 수 있고, semantic difference를 cosine angle으로 설명할 수 있다는 강력한 가정을 만들어낸다. 그렇지만, 모든 측면에서 이 모델링이 최적으로 동작하지는 못한다. 
   
 * DCNet(Decoupled Network) 은 다음과 같은 4가지 측면에서 장점을 가진다.
@@ -128,7 +127,7 @@ Georgia Institute of Technology, NVIDIA, Emory University, Tsinghua University, 
 
 ### Unbounded Decoupled Operators
 
-* **Linear Convolution**
+* **Linear Convolution (LinearConv)**
 
   * 가장 간단한 Unbounded decoupled operator의 형태중 하나는 LinearConv 이다.
     
@@ -140,10 +139,52 @@ Georgia Institute of Technology, NVIDIA, Emory University, Tsinghua University, 
   * LinearConv는 weights를 hypersphere에 사영시키고, slope를 컨트롤 할 수 있는 파라미터가 있다는 점에서 기존 convolution 과 다르다. 
     
 
-* **Segmented Convolution**
+* **Segmented Convolution (SegConv)**
 
-  * ㅇ
+  * SegConv 는 조금 더 flexible 한 multi-range linear function 이다. LinearConv와 BallConv는 SegConv에 포함될 수 있다. 
+
+  ​									$$f_{ d }(w,x)=\begin{cases} \alpha \left\| x \right\| \cdot g(\theta_{(w,x)}), \quad 0\,\le\, \left\| x \right\| \,\le\,\rho  \\ (\beta \left\| x \right\|  + \alpha\rho - \beta\rho)\cdot g(\theta_{(w,x)}), \quad\rho\,< \,  \left\| x \right\|  \end{cases}$$
+
+
+
+* **Logarithm Convolution (LogConv)**
+
+  * unbounded 형태의 smooth decoupled operator 이다. 
+
+    ​						$$ f_d(w,x) = \alpha \, log(1+\left\| x \right\|) \cdot g(\theta_{w,x}) $$ 
+
+
+
+### Properties of Decoupled Operators
+
+* **Operator Radius**
+  * Operator radius 는 magnitude function에서 gradient가 변하는 점을 표기하기 위해 필요하며, 앞으로 $$\rho$$ 로 표기한다.
+  * Operator radius 는 magnitude function 의 2 단계를 미분하며, 이 2 단계는 서로 다른 gradient 범위를 갖고 있기 때문에, optimization 과정동안 서로 다르게 행동하게 된다. 
+  * BallConv 의 경우 $$\left\| x \right\|$$ 가 $$\rho$$ 보다 작을경우, magnitude function 은 활성화되며, $$\left\| x \right\|$$ 와 함께 선형적으로 증가할 것이다. 하지만 $$\left\| x \right\|$$ 가 $$\rho$$ 보다 크게 될 경우, magnitude function 은 deactivated 되며, 상수값을 결과로 낼 것이다.
+  * SegConv 의 경우, $$\left\| x \right\| = \rho$$ 는 magnitude function의 기울기가 변하는 점을 나타낼 것이다.
     
-  * ㅇ
-  * 
+* **Boundedness**
+  * Decoupled operator 의 boundedness 는 convergence speed 와 robustness 에 영향을 줄 것이다.
+    * Bounded operators 는 SGD를 사용하는 신경망 트레이닝에서 조금 더 좋은 problem conditioning을 이끌어 줄 수 있다. 
+    * Bounded operators 는 출력값의 variance를 작게 만들어줄수 있으며, internal covariate shift problem 을 해결해 줄 수 있다.  
+      * Internal covariate shift problem ?
+        * Gradient vanishing problem 의 요인중에 하나이다.
+        * Covariate shift는 train data와 test data의 data distribution 이 다른 현상을 의미한다. 
+        * 각 layer들의 입력 distribution 이 consistent 해야하는데, 이렇지 못한 현상을 internal covariate shift 라고 정의한다. 
+        * BN(Batch Normalization)을 사용하여 internal covariate shift 를 감소시킬 수 있고, learning rate를 조금 더 크게 사용 가능하다.
+    * Neural network 에서의 Lipschitz constant를 제약하여 전체 신경망이 smooth하도록 만들 수 있다. 
+      (Lipschitz regularity of deep neural networks: analysis and efficient estimation 논문 참조)
+      * Lipschitz constant of neural network는  neural network가 adversarial perturbation에 강인하게 대응할 수 있는지에 대하여 관계가 있다. 
+    * 하지만, Unbounded operators가 approximation power, flexibility 측면에서는 bounded operators 보다 좋은 효과를 가진다. 
+      
+* **Smoothness**
+  * Magnitude function의 smoothness는 approximation ability, convergence 와 관련된다. 
+  * Smooth magnitude function 은 조금 더 좋은 approximation rate를 가지고, 안정적이고 빠른 convergence 를 할 수있게 한다. 하지만, computationally expensive 하기 때문에, smooth function 으로 approximation 하는 것은 어렵다. 
 
+
+
+### Geometric Interpretations
+
+* 모든 decoupled convolution operator는 아래 그림과 같이 표현된다. 
+* 그림 2
+* 

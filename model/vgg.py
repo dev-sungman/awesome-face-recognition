@@ -36,6 +36,8 @@ class VGG(nn.Module):
         # l2 normalization
         x = torch.div(x, torch.norm(x, 2, axis=1, True))
 
+        return x
+
     def _initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -72,11 +74,11 @@ def make_layers(cfg, batch_norm=False):
 
     return nn.Sequential(*layers)
 
-def vgg16_bn(**kwargs):
+def vgg16(**kwargs):
     model = VGG(make_layers(cfg['VGG16_bn'], batch_norm=True), **kwargs)
     return model
     
-def vgg19_bn(**kwargs):
+def vgg19(**kwargs):
     model = VGG(make_layers(cfg['VGG19_bn'], batch_norm=True), **kwargs)
     return model
 
