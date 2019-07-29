@@ -28,7 +28,7 @@ class FaceTrainer:
 
         self.optimizer = optim.SGD(self.model.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
 
-    def train(self, epcohs):
+    def train(self, epochs):
 
         running_loss = 0.
 
@@ -39,11 +39,12 @@ class FaceTrainer:
 
                 self.optimizer.zero_grad()
                 
-                loss = self.model.train_model()
+                loss = self.model.train_model(img=imgs, label=labels, optimizer=self.optimizer)
+                
 
                 self.optimizer.step()
                 
-                print('epoch', epoch, ' started')
+                print('epoch', epoch, ' started', ' loss: ', loss)
 
                 self.step += 1
 

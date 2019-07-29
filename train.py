@@ -18,7 +18,6 @@ def parse_arguments(argv):
 
     # set up root for training dataset (masked)
     # if you wnat to training with mask image, use this
-    parser.add_argument('--mask_root', type=str, default=None)
     parser.add_argument('--epochs', type=int, default=None)
     parser.add_argument('--batch_size', type=int, default=None)
     parser.add_argument('--embedding_size', type=int, default=512)
@@ -53,6 +52,8 @@ def main(args):
     trainer = FaceTrainer(device, data_loader, backbone, head, log_dir, model_dir, args.embedding_size)
 
     # train using trainer
+    trainer.train(args.epochs)
+
 
 if __name__ == '__main__':
     args = parse_arguments(sys.argv[1:])

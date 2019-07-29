@@ -44,10 +44,11 @@ class FaceNetwork(nn.Module):
     def train_model(self, img, label, optimizer):
         feature_map = self.backbone(imgs)
         embeddings = self.flatter(feature_map)
-        thetas = self.head(embeddings, labels)
+        with torch.no_grad():
+            thetas = self.head(embeddings, labels)
 
         criterion = nn.CrossEntropyLoss()
-        loss = self.head(emb, label)
+        loss = criterion(thetas, labels)
 
         optimizer.zero_grad()
         loss.backward()
