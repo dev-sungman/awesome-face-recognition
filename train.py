@@ -7,7 +7,8 @@ import os
 import argparse
 
 from src.utils import *
-from src.data_handler import FaceDataset, FaceLoader
+from src.data_handler import FaceLoader
+from src.trainer import FaceTrainer
 
 def parse_arguments(argv):
 
@@ -49,7 +50,7 @@ def main(args):
     
     data_loader = FaceLoader(args.train_root, args.batch_size)
     
-    trainer = FaceTrainer(device, data_loader, backbone, head, log_dir, model_dir, args.embedding_size)
+    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, log_dir, model_dir, args.embedding_size)
 
     # train using trainer
     trainer.train(args.epochs)
