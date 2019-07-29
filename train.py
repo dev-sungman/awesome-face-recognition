@@ -48,15 +48,7 @@ def main(args):
     log_dir = args.save_root + '/log'
     make_dir(log_dir)
     
-    # create transform, dataset, dataloader
-    train_transform, mask_transform = make_transform([224,224])
-
-    if args.mask_root is None:
-        face_datasets = ImageFolder(self,train_root, train_transform)
-    else:
-        face_datasets = FaceDataset(args.train_root, args.mask_root, train_transform, mask_transform)
-    
-    data_loader = FaceLoader(args.train_root, args.batch_size, face_datasets)
+    data_loader = FaceLoader(args.train_root, args.batch_size)
     
     trainer = FaceTrainer(device, data_loader, backbone, head, log_dir, model_dir, args.embedding_size)
 
