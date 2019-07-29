@@ -29,7 +29,7 @@ class FaceTrainer:
             self.backbone = vgg19().to(self.device)
             self.backbone = nn.DataParallel(self.backbone)
 
-        self.flatter = Flatter(embedding_size=embedding_size)
+        self.flatter = Flatter(embedding_size=embedding_size).to(self.device)
         
         self.head = Arcface(num_classes = self.class_num).to(self.device)
 
@@ -42,7 +42,7 @@ class FaceTrainer:
 
         for epoch in range(epochs):
             print('epoch', epoch, ' started')
-            for imgs, masks, labels in iter(self.train_loader):
+            for imgs, labels in iter(self.train_loader):
                 imgs = imgs.to(self.device)
                 labels = labels.to(self.device)
 
@@ -55,7 +55,7 @@ class FaceTrainer:
                 lossfunc = CrossEntropyLoss()
                 loss = lossfunc(thetas, labels)
                 loss.backward()
-
+                
                 self.optimizer.step()
 
                 self.step += 1

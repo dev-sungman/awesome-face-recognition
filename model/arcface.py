@@ -18,7 +18,7 @@ class Arcface(nn.Module):
         nB = len(x)
         kernel_norm = torch.div(self.kernel, torch.norm(self.kernel, 2, 1, True))
         cos_theta = torch.mm(x, kernel_norm)
-        cos_theta = cos.theta.clamp(-1, 1)
+        cos_theta = cos_theta.clamp(-1, 1)
         cos_theta_2 = torch.pow(cos_theta, 2)
         sin_theta_2 = 1- cos_theta_2
         sin_theta = torch.sqrt(sin_theta_2)
