@@ -35,7 +35,7 @@ class FaceTrainer:
 
         self.optimizer = optim.SGD(self.backbone.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
 
-    def train(self, epcohs):
+    def train(self, epochs):
         self.backbone.train()
 
         running_loss = 0.
