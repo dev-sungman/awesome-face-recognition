@@ -1,6 +1,5 @@
 from model.vgg import vgg19
-from model.arcface import Arcface
-from model.flatter import Flatter
+from model.facenetwork import FaceNetwork
 from src.data_handler import FaceLoader
 
 import torch
@@ -25,13 +24,7 @@ class FaceTrainer:
         self.train_loader, self.class_num = dataloader.get_loader()
         self.model_dir = model_dir
         
-        if backbone == 'vgg':
-            self.backbone = vgg19().to(self.device)
-            self.backbone = nn.DataParallel(self.backbone)
-
-        self.flatter = Flatter(embedding_size=embedding_size).to(self.device)
-        
-        self.head = Arcface(num_classes = self.class_num).to(self.device)
+        self.model = FaceNetwork(backbone, head, embedding_size)
 
         self.optimizer = optim.SGD(self.backbone.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
 

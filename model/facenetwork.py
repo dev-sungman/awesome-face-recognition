@@ -7,7 +7,7 @@ from model.arcface import Arcface
 from model.flatter import Flatter
 
 class FaceNetwork(nn.Module):
-    def __init__(self, backbone, head, data_loader, embedding_size, init_weights=True):
+    def __init__(self, backbone, head, embedding_size, init_weights=True):
         # select backbone network 
         if backbone ='vgg':
             self.backbone = vgg19_bn(num_classes=self.class_num).to(self.device)
