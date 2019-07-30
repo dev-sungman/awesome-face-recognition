@@ -1,0 +1,4 @@
+bcolz
+opencv-python
+pillow
+tensorboardX
