@@ -41,7 +41,7 @@ class FaceLoader:
 
         loader = DataLoader(datasets, batch_size=self.batch_size, num_workers=4, pin_memory=True, shuffle=True)
 
-        num_classes = len(datasets)
+        num_classes = len(os.listdir(self.data_root))
 
         return loader, num_classes
 

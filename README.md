@@ -27,3 +27,9 @@
 4. [CVPR 2018] Cosface - Large margin cosine loss
 5. [CVPR 2018] Ring loss - Ring loss
 6. [CVPR 2019] Arcface - Cosine margin loss
+
+
+
+## References
+
+1. <https://github.com/TreB1eN/InsightFace_Pytorch>

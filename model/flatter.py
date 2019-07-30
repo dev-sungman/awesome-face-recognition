@@ -26,7 +26,7 @@ class Flatter(nn.Module):
         x = self.bn(x)
 
         # L2 Normalization
-        x = torch.div(x, torch.norm(x, 2, axis=1, True))
+        x = torch.div(x, torch.norm(x, 2, 1, True))
         
         return x
 

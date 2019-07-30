@@ -44,6 +44,7 @@ class FaceNetwork(nn.Module):
     def train_model(self, img, label, optimizer):
         feature_map = self.backbone(imgs)
         embeddings = self.flatter(feature_map)
+        
         with torch.no_grad():
             thetas = self.head(embeddings, labels)
 
