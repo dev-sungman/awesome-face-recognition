@@ -49,4 +49,4 @@ class FaceTrainer:
                 self.step += 1
 
 
-
+    def eval(self)
