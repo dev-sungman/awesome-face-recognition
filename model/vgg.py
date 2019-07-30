@@ -8,8 +8,8 @@ import math
 __all__ = ['VGG', 'vgg16', 'vgg19',]
 
 cfg = {
-        'VGG16_bn': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
-        'VGG19_bn': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
+        'VGG16': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+        'VGG19': [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M'],
     }
 
 class VGG(nn.Module):
@@ -62,10 +62,10 @@ def make_layers(cfg, batch_norm=False):
     return nn.Sequential(*layers)
 
 def vgg16(**kwargs):
-    model = VGG(make_layers(cfg['VGG16_bn'], batch_norm=True), **kwargs)
+    model = VGG(make_layers(cfg['VGG16'], batch_norm=True), **kwargs)
     return model
     
 def vgg19(**kwargs):
-    model = VGG(make_layers(cfg['VGG19_bn'], batch_norm=True), **kwargs)
+    model = VGG(make_layers(cfg['VGG19'], batch_norm=True), **kwargs)
     return model
 

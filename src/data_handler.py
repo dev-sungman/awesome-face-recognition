@@ -5,12 +5,11 @@ from torchvision.datasets import ImageFolder
 from torchvision import transforms
 from PIL import Image
 
+import bcolz
 import numpy as np
 import cv2
 import sys
 import os
-
-IMG_EXTENSIONS=('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
 
 def make_transforms(img_size):
     train_transform = transforms.Compose([
@@ -21,6 +20,17 @@ def make_transforms(img_size):
         ])
 
     return train_transform
+
+def get_val_pair(path, name):
+    carray = bcolz.carray(rootdir = path/name, mode='r')
+    issame = np.load(path/'{}_list.npy'.format(name))
+    return carray, issame
+
+def get_val_data(data_path):
+    agedb_30, agedb_30_issame = get_val_pair(data_path, 'agedb_30')
+    cfp_fp, cfp_fp_issame = get_val_pair(data_path, 'cfp_fp')
+    lfw, lfw_issame = get_val_pair(data_path, 'lfw')
+    return agedb_30, cfp_fp, lfw, agedb_30_issame, cfp_fp_issame, lfw_issame
 
 class FaceLoader:
     def __init__(self, data_root, batch_size, shuffle=True, is_valid_file=None):

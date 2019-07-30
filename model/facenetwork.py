@@ -7,16 +7,21 @@ from model.arcface import Arcface
 from model.flatter import Flatter
 
 class FaceNetwork(nn.Module):
-    def __init__(self, backbone, head, embedding_size, init_weights=True):
+    def __init__(self, device, backbone, head, class_num, embedding_size, init_weights=True):
+        super(FaceNetwork, self).__init__()
+        
+        self.device = device
+        self.class_num = class_num
+
         # select backbone network 
-        if backbone ='vgg':
-            self.backbone = vgg19_bn(num_classes=self.class_num).to(self.device)
+        if backbone == 'vgg':
+            self.backbone = vgg19().to(self.device)
             self.backbone = nn.DataParallel(self.backbone)
 
-        self.flatter = Flatter(embedding_size=embedding_size)
+        self.flatter = Flatter(embedding_size=embedding_size).to(self.device)
         
         # select head network
-        if head = 'arcface':
+        if head == 'arcface':
             self.head = Arcface(num_classes = self.class_num).to(self.device)
 
         if init_weights:
@@ -42,14 +47,13 @@ class FaceNetwork(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def train_model(self, img, label, optimizer):
-        feature_map = self.backbone(imgs)
+        feature_map = self.backbone(img)
         embeddings = self.flatter(feature_map)
         
-        with torch.no_grad():
-            thetas = self.head(embeddings, labels)
+        thetas = self.head(embeddings, label)
 
         criterion = nn.CrossEntropyLoss()
-        loss = criterion(thetas, labels)
+        loss = criterion(thetas, label)
 
         optimizer.zero_grad()
         loss.backward()

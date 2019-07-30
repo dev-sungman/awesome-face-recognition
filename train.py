@@ -25,7 +25,6 @@ def parse_arguments(argv):
 
     # set up root for saving model, log
     parser.add_argument('--save_root', type=str, default=None)
-    parser.add_argument('--gpu_idx', type=int, default=0)
 
     # set up training model backbone
     # TODO: add more backbone network.
@@ -50,7 +49,7 @@ def main(args):
     
     data_loader = FaceLoader(args.train_root, args.batch_size)
     
-    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, log_dir, model_dir, args.embedding_size)
+    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, log_dir, model_dir, args.batch_size, args.embedding_size)
 
     # train using trainer
     trainer.train(args.epochs)
