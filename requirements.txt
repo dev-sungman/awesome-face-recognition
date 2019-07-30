@@ -2,3 +2,5 @@ bcolz
 opencv-python
 pillow
 tensorboardX
+sklearn
+mxnet
