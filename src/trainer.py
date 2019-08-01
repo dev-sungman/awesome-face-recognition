@@ -26,17 +26,21 @@ class FaceTrainer:
         self.model_dir = model_dir
         self.log_dir = log_dir
         
+        print('class number: ', self.class_num)
+        
         self.model = FaceNetwork(device, backbone, head, self.class_num, embedding_size)
 
-        self.optimizer = optim.SGD(self.model.parameters(), lr=0.001, momentum=0.9, weight_decay=5e-4)
+        self.optimizer = optim.SGD(self.model.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
         
         self.agedb_30, self.cfp_fp, self.lfw, self.agedb_30_pair, self.cfp_fp_pair, self.lfw_pair = get_val_data(Path('data/eval/'))
 
         self.writer = SummaryWriter(log_dir)
 
-        self.board_loss_every = len(self.train_loader) // 1
+        self.board_loss_every = len(self.train_loader) // 10
         self.evaluate_every = len(self.train_loader) // 5
-        self.save_every = len(self.train_loader) // 10
+        self.save_every = len(self.train_loader) // 2
+        
+        print("board_frequent: ", self.board_loss_every, "eval_frequent: ", self.evaluate_every, "save_frequent: ", self.save_every)
 
     def train(self, epochs):
         self.model.train()
@@ -47,9 +51,15 @@ class FaceTrainer:
                 imgs = imgs.to(self.device)
                 labels = labels.to(self.device)
                 
+                self.optimizer.zero_grad()
+                
                 loss = self.model.train_model(imgs, labels, self.optimizer)
-                running_loss += loss
+                loss.backward()
 
+                self.optimizer.step()
+
+                running_loss += loss.item()
+                
                 # Save the training log
                 if self.step % self.board_loss_every == 0 and self.step != 0:
                     loss_board = running_loss / self.board_loss_every
@@ -73,15 +83,15 @@ class FaceTrainer:
                 if self.step % self.save_every == 0 and self.step != 0:
                     torch.save(self.model.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
                 # Optimizer Scheduling
-                if self.step == 20000:
+                if self.step == 40000:
                     for params in self.optimizer.param_groups:
                         params['lr'] /= 10
 
-                elif self.step == 28000:
+                elif self.step == 60000:
                     for params in self.optimizer.param_groups:
                         params['lr'] /= 10
                 
-                print("[Epoch: %d\tIter: [%d/%d]\tLoss: %0.4f]" %(epoch, self.step, len(self.train_loader), loss))
+                print("[Epoch: %d\tIter: [%d/%d]\tLoss: %0.4f]" %(epoch, self.step, len(self.train_loader), loss.item()))
 
                 self.step += 1
 

@@ -11,16 +11,6 @@ import cv2
 import sys
 import os
 
-def make_transforms(img_size):
-    train_transform = transforms.Compose([
-        transforms.Resize(img_size),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        ])
-
-    return train_transform
-
 def get_val_pair(path, name):
     carray = bcolz.carray(rootdir = path/name, mode='r')
     issame = np.load(path/'{}_list.npy'.format(name))
