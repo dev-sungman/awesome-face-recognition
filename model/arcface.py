@@ -16,7 +16,7 @@ class Arcface(nn.Module):
 
     def forward(self, x, label):
         nB = len(x)
-        kernel_norm = torch.div(self.kernel, torch.norm(self.kernel, 2, 1, True))
+        kernel_norm = torch.div(self.kernel, torch.norm(self.kernel, 2, 0, True))
         cos_theta = torch.mm(x, kernel_norm)
         cos_theta = cos_theta.clamp(-1, 1)
         cos_theta_2 = torch.pow(cos_theta, 2)

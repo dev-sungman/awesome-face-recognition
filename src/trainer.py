@@ -1,7 +1,9 @@
 from model.vgg import vgg19
+from model.arcface import Arcface
 from model.facenetwork import FaceNetwork
 from src.data_handler import FaceLoader, get_val_data
 from src.verification import *
+from src.utils import *
 
 import torch
 from torch import optim
@@ -29,11 +31,14 @@ class FaceTrainer:
         print('class number: ', self.class_num)
         
         self.model = FaceNetwork(device, backbone, head, self.class_num, embedding_size)
-
-        self.optimizer = optim.SGD(self.model.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4)
+        paras_only_bn, paras_wo_bn = separate_bn_paras(self.model)
+        self.optimizer = optim.SGD([
+                {'params': paras_wo_bn[:-1], 'weight_decay':4e-5},
+                {'params': [paras_wo_bn[-1]] + [self.model.head.kernel], 'weight_decay': 4e-4},
+                {'params': paras_only_bn}
+            ], lr=0.1, momentum=0.9)
         
         self.agedb_30, self.cfp_fp, self.lfw, self.agedb_30_pair, self.cfp_fp_pair, self.lfw_pair = get_val_data(Path('data/eval/'))
-
         self.writer = SummaryWriter(log_dir)
 
         self.board_loss_every = len(self.train_loader) // 10
@@ -54,6 +59,7 @@ class FaceTrainer:
                 self.optimizer.zero_grad()
                 
                 loss = self.model.train_model(imgs, labels, self.optimizer)
+                
                 loss.backward()
 
                 self.optimizer.step()
@@ -82,6 +88,7 @@ class FaceTrainer:
                 
                 if self.step % self.save_every == 0 and self.step != 0:
                     torch.save(self.model.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
+                
                 # Optimizer Scheduling
                 if self.step == 40000:
                     for params in self.optimizer.param_groups:
