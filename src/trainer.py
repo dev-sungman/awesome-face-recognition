@@ -1,5 +1,3 @@
-from model.vgg import vgg19
-from model.arcface import Arcface
 from model.facenetwork import FaceNetwork
 from src.data_handler import FaceLoader, get_val_data
 from src.verification import *
