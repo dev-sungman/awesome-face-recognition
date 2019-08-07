@@ -16,6 +16,7 @@ class VGG(nn.Module):
     def __init__(self, features, init_weights=True):
         super(VGG, self).__init__()
         self.features = features
+        
         if init_weights:
             self._initialize_weights()
 
@@ -67,3 +68,12 @@ def vgg19(**kwargs):
     model = VGG(make_layers(cfg['VGG19'], batch_norm=True), **kwargs)
     return model
 
+'''
+def vgg19_naive(nn.Module):
+    def __init__(self):
+        self.block1 = nn.Sequential(
+                nn.Conv2d(3, 64, kernel_size=3, padding=1),
+                nn.PReLU(64),
+                nn.Conv2d(64, 64, kernel_size=3, padding=1),
+                nn.MaxPool2d(kernel_size=2, stride=2),
+'''

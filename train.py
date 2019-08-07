@@ -33,11 +33,15 @@ def parse_arguments(argv):
     # set up training model head
     # TODO: add more network head
     parser.add_argument('--head', type=str, default='arcface', choices=['arcface'])
+    
+    parser.add_argument('--gpu_idx', type=str, default=0)
+
     return parser.parse_args(argv)
 
 def main(args):
     
     # check cuda availablity
+    os.environ["CUDA_VISIBLE_DEVICES"]=args.gpu_idx
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
     # make save directory

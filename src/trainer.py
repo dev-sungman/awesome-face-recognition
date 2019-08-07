@@ -73,15 +73,15 @@ class FaceTrainer:
                     running_loss = 0.
                 
                 if self.step % self.evaluate_every == 0 and self.step != 0:
-                    acc, best_thresh = self.evaluate(self.agedb_30, self.agedb_30_pair)
+                    acc, best_thresh = self.evaluate(self.agedb_30, self.agedb_30_pair, self.embedding_size)
                     self.board_val('agedb_30', acc, best_thresh)
                     print("[AgeDB-30] acc: %0.4f\t best_thresh: %0.4f" %(acc, best_thresh))
 
-                    acc, best_thresh = self.evaluate(self.lfw, self.lfw_pair)
+                    acc, best_thresh = self.evaluate(self.lfw, self.lfw_pair, self.embedding_size)
                     self.board_val('lfw', acc, best_thresh)
                     print("[LFW] acc: %0.4f\t best_thresh: %0.4f" %(acc, best_thresh))
 
-                    acc, best_thresh = self.evaluate(self.cfp_fp, self.cfp_fp_pair)
+                    acc, best_thresh = self.evaluate(self.cfp_fp, self.cfp_fp_pair, self.embedding_size)
                     self.board_val('cfp_fp', acc, best_thresh)
                     print("[CFP-FP] acc: %0.4f\t best_thresh: %0.4f" %(acc, best_thresh))
                     
@@ -102,9 +102,9 @@ class FaceTrainer:
 
                 self.step += 1
 
-    def evaluate(self, carray, issame, nrof_folds=5, tta=False):
+    def evaluate(self, carray, issame, embedding_size, nrof_folds=5, tta=False):
         self.model.eval()
-        embeddings = np.zeros([len(carray), 512])
+        embeddings = np.zeros([len(carray), embedding_size])
         
         idx = 0
         with torch.no_grad():

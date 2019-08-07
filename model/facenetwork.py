@@ -2,8 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
-
-from model.vgg import vgg19
 from model.resnet import ResNet50
 from model.arcface import Arcface
 from model.flatter import Flatter
@@ -23,9 +21,12 @@ class FaceNetwork(nn.Module):
 
         self.flatter = Flatter(embedding_size=embedding_size).to(self.device)
         
+
+
+
         # select head network
         if head == 'arcface':
-            self.head = Arcface(num_classes = self.class_num).to(self.device)
+            self.head = Arcface(num_classes = self.class_num, embedding_size=embedding_size).to(self.device)
 
     def train_model(self, img, label, optimizer):
         feature_map = self.backbone(img)
