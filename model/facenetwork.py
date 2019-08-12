@@ -20,9 +20,6 @@ class FaceNetwork(nn.Module):
             self.backbone = ResNet50().to(self.device)
 
         self.flatter = Flatter(embedding_size=embedding_size).to(self.device)
-        
-
-
 
         # select head network
         if head == 'arcface':
