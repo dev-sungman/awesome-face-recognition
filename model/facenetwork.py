@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
 from model.vgg import vgg19_edge, vgg19
-from model.resnet import ResNet50
+from model.resnet import ResNet18, ResNet50
 from model.arcface import Arcface
 from model.flatter import Flatter
 
@@ -15,11 +15,13 @@ class FaceNetwork(nn.Module):
         self.class_num = class_num
 
         # select backbone network 
+        print('backbone: ', backbone)
         if backbone == 'vgg':
             self.backbone = vgg19().to(self.device)
             #self.backbone = vgg19_edge().to(self.device)
         elif backbone == 'resnet':
-            self.backbone = ResNet50().to(self.device)
+            self.backbone = ResNet18().to(self.device)
+            #self.backbone = ResNet50().to(self.device)
 
         self.flatter = Flatter(embedding_size=embedding_size).to(self.device)
         
