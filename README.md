@@ -4,6 +4,8 @@
 
 
 
+
+
 ## Papers (novel loss function)
 
 | Conf.    | Title                                                        | Images   | LFW(%) | YTF(%) | Link |
@@ -18,7 +20,9 @@
 | 19, CVPR | [ArcFace: Additive Angular Margin Loss for Deep Face Recognition](https://arxiv.org/pdf/1801.07698.pdf) | WebFace  | 99.53  | -      |      |
 | 19, CVPR | [RegularFace: Deep Face Recognition via Exclusive Regularization](http://mftp.mmcheng.net/Papers/19cvprRegularFace.pdf) | WebFace  | 99.33  | 94.4   |      |
 
+  
 
+  
 
 ## Papers (various)
 
@@ -33,9 +37,7 @@
 | 19, CVPR | [Low-Rank Laplacian-Uniform Mixed Model for Robust Face Recognition](http://openaccess.thecvf.com/content_CVPR_2019/papers/Dong_Low-Rank_Laplacian-Uniform_Mixed_Model_for_Robust_Face_Recognition_CVPR_2019_paper.pdf) | Robustness in occlusion, pixel corrpution, disguise          |
 | 19, CVPR | [Unequal-training for Deep Face Recognition with Long-tailed Noisy Data](http://openaccess.thecvf.com/content_CVPR_2019/papers/Zhong_Unequal-Training_for_Deep_Face_Recognition_With_Long-Tailed_Noisy_Data_CVPR_2019_paper.pdf) | Unequal-training for long-tailed noisy data                  |
 
-
-
-
+  
 
 
 
