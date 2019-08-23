@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Flatter(nn.Module):
-    def __init__(self, embedding_size, init_weights=True):
+    def __init__(self, embedding_size, init_weights=False):
         super(Flatter, self).__init__()
         self.avgpool = nn.AdaptiveAvgPool2d((7,7))
         self.conv = nn.Conv2d(512, 512, 7)

@@ -41,7 +41,7 @@ class FaceTrainer:
 
         self.board_loss_every = len(self.train_loader) // 10
         self.evaluate_every = len(self.train_loader) // 5
-        self.save_every = len(self.train_loader) // 2
+        self.save_every = len(self.train_loader) // 1
         
         print("board_frequent: ", self.board_loss_every, "eval_frequent: ", self.evaluate_every, "save_frequent: ", self.save_every)
 
@@ -88,11 +88,11 @@ class FaceTrainer:
                     torch.save(self.model.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
                 
                 # Optimizer Scheduling
-                if self.step == 40000:
+                if self.step == 100000:
                     for params in self.optimizer.param_groups:
                         params['lr'] /= 10
 
-                elif self.step == 60000:
+                elif self.step == 120000:
                     for params in self.optimizer.param_groups:
                         params['lr'] /= 10
                 
