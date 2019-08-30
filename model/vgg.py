@@ -5,6 +5,8 @@ import torch.nn.functional as F
 import numpy as np
 import math
 
+from model.non_local_embedded_gaussian import NONLocalBlock2D
+
 __all__ = ['VGG', 'vgg16', 'vgg19',]
 
 cfg = {
@@ -16,12 +18,14 @@ class VGG(nn.Module):
     def __init__(self, features, init_weights=True):
         super(VGG, self).__init__()
         self.features = features
+        self.non_local = NONLocalBlock2D(512)
         
         if init_weights:
             self._initialize_weights()
 
     def forward(self, x):
         x = self.features(x)
+        x = self.non_local(x)
         return x
 
     def _initialize_weights(self):

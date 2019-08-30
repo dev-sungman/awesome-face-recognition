@@ -3,12 +3,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class Flatter(nn.Module):
-    def __init__(self, embedding_size, init_weights=False):
+    def __init__(self, embedding_size, init_weights=False, expansion=1):
         super(Flatter, self).__init__()
-        self.avgpool = nn.AdaptiveAvgPool2d((7,7))
-        self.conv = nn.Conv2d(512, 512, 7)
-        self.prelu = nn.PReLU(512)
-        self.linear = nn.Linear(512, embedding_size)
+        self.avgpool = nn.AdaptiveAvgPool2d((1,1))
+        self.prelu = nn.PReLU(512 * expansion)
+        self.linear = nn.Linear(512 * expansion, embedding_size)
         self.bn = nn.BatchNorm1d(embedding_size)
 
         if init_weights:
@@ -16,7 +15,6 @@ class Flatter(nn.Module):
 
     def forward(self, x):
         x = self.avgpool(x)
-        x = self.conv(x)
         x = self.prelu(x)
         x = x.view(x.size(0), -1)
         x = self.linear(x)

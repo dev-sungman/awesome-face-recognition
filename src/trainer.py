@@ -84,7 +84,7 @@ class FaceTrainer:
                     print("[CFP-FP] acc: %0.4f\t best_thresh: %0.4f" %(acc, best_thresh))
                     
                 
-                if self.step % self.save_every == 0 and self.step != 0:
+                if self.epoch % 10 == 0 and self.step != 0:
                     torch.save(self.model.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
                 
                 # Optimizer Scheduling
