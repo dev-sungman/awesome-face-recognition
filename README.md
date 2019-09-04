@@ -49,7 +49,7 @@
 **- Training**
 
 - [x] Faces-emore
-  
+- [x] VGGFace2
 
 **- Evaluation Protocol**
 
@@ -96,3 +96,4 @@
 ## References
 
 1. <https://github.com/TreB1eN/InsightFace_Pytorch>
+2. https://github.com/ronghuaiyang/arcface-pytorch
