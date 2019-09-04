@@ -1,8 +1,10 @@
-from model.facenetwork import FaceNetwork
 from src.data_handler import FaceLoader, get_val_data
 from src.verification import *
 from src.utils import *
 from torch.optim import lr_scheduler
+
+from model.resnet import resnet18, resnet50
+from model.arcface import ArcMarginProduct
 
 import torch
 from torch import optim
@@ -15,6 +17,7 @@ import numpy as np
 import os
 from tensorboardX import SummaryWriter
 from pathlib import Path
+from torchsummary import summary
 
 class FaceTrainer:
     def __init__(self, device, dataloader, backbone, head, log_dir, model_dir, batch_size, embedding_size=512):
@@ -29,21 +32,15 @@ class FaceTrainer:
         
         print('class number: ', self.class_num)
         
-        self.model = FaceNetwork(device, backbone, head, self.class_num, embedding_size)
+        self.backbone = resnet50().to(self.device)
+        self.head = ArcMarginProduct(embedding_size, self.class_num, 32).to(self.device)
         self.optimizer = optim.SGD([
-            {'params':self.model.parameters(), 'weight_decay': 5e-4}],
-            lr=0.1, momentum=0.9)
+            {'params' : self.backbone.parameters(), 'weight_decay': 5e-4},
+            {'params' : self.head.parameters(), 'weight_decay': 4e-4}]
+            , lr=0.1, momentum=0.9)
 
-        '''
-        paras_only_bn, paras_wo_bn = separate_bn_paras(self.model)
-        self.optimizer = optim.SGD([
-                {'params': paras_wo_bn[:-1], 'weight_decay':4e-5},
-                {'params': [paras_wo_bn[-1]] + [self.model.head.kernel], 'weight_decay': 4e-4},
-                {'params': paras_only_bn}
-            ], lr=0.1, momentum=0.9)
-        '''
         
-        self.exp_lr_scheduler = lr_scheduler.MultiStepLR(self.optimizer, milestones=[6, 11, 16], gamma=0.1)
+        self.exp_lr_scheduler = lr_scheduler.MultiStepLR(self.optimizer, milestones=[3, 6, 10], gamma=0.1)
         
         self.agedb_30, self.cfp_fp, self.lfw, self.agedb_30_pair, self.cfp_fp_pair, self.lfw_pair = get_val_data(Path('data/eval/'))
         self.writer = SummaryWriter(log_dir)
@@ -55,19 +52,23 @@ class FaceTrainer:
         print("board_frequent: ", self.board_loss_every, "eval_frequent: ", self.evaluate_every, "save_frequent: ", self.save_every)
 
     def train(self, epochs):
-        self.model.train()
+        self.backbone.train()
         self.exp_lr_scheduler.step()
 
         running_loss = 0.
         for epoch in range(epochs):
+            print_step = 0
             for imgs, labels in iter(self.train_loader):
-                print_step = 0
                 imgs = imgs.to(self.device)
                 labels = labels.to(self.device)
                 
                 self.optimizer.zero_grad()
                 
-                loss = self.model.train_model(imgs, labels, self.optimizer)
+                embeddings = self.backbone(imgs)
+                thetas = self.head(embeddings, labels)
+
+                criterion = nn.CrossEntropyLoss()
+                loss = criterion(thetas, labels)
                 
                 loss.backward()
 
@@ -96,42 +97,33 @@ class FaceTrainer:
                     
                 
                 if epoch % 10 == 0 and epoch != 0:
-                    torch.save(self.model.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
+                    torch.save(self.backbone.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
                 
-                # Optimizer Scheduling
-                '''
-                if self.step == 100000:
-                    for params in self.optimizer.param_groups:
-                        params['lr'] /= 10
-
-                elif self.step == 120000:
-                    for params in self.optimizer.param_groups:
-                        params['lr'] /= 10
-                '''
+                
                 print("[Epoch: %d\tIter: [%d/%d]\tLoss: %0.4f]" %(epoch, print_step, len(self.train_loader), loss.item()))
 
                 self.step += 1
                 print_step += 1
 
     def evaluate(self, carray, issame, embedding_size, nrof_folds=5, tta=False):
-        self.model.eval()
+        self.backbone.eval()
         embeddings = np.zeros([len(carray), embedding_size])
         
         idx = 0
         with torch.no_grad():
             while idx + self.batch_size <= len(carray):
                 batch = torch.tensor(carray[idx:idx+self.batch_size])
-                embeddings[idx:idx+self.batch_size] = self.model(batch.to(self.device)).cpu()
+                embeddings[idx:idx+self.batch_size] = self.backbone(batch.to(self.device)).cpu()
                 
                 idx += self.batch_size
 
             if idx < len(carray):
                 batch = torch.tensor(carray[idx:])
-                embeddings[idx:] = self.model(batch.to(self.device)).cpu()
+                embeddings[idx:] = self.backbone(batch.to(self.device)).cpu()
 
         tpr, fpr, acc, best_thresh = evaluate(embeddings, issame, nrof_folds)
-        
-        self.model.train()
+       
+        self.backbone.train()
         
         return acc.mean(), best_thresh.mean()
 

@@ -15,17 +15,24 @@ cfg = {
     }
 
 class VGG(nn.Module):
-    def __init__(self, features, init_weights=True):
+    def __init__(self, features, init_weights=True, embedding_size=512):
         super(VGG, self).__init__()
         self.features = features
         self.non_local = NONLocalBlock2D(512)
+        self.avgpool = nn.AdaptiveAvgPool2d((1,1))
+        self.fc = nn.Linear(512, embedding_size)
+
         
         if init_weights:
             self._initialize_weights()
 
     def forward(self, x):
         x = self.features(x)
-        x = self.non_local(x)
+        
+        x = self.avgpool(x)
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        #x = self.non_local(x)
         return x
 
     def _initialize_weights(self):
