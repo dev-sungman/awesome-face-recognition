@@ -47,12 +47,10 @@
 ### Datasets
 
 **- Training**
-
-- [x] Faces-emore  
-  
+- [x] Faces-emore
+- [x] VGGFace2  
 
 **- Evaluation**
-
 - [x] LFW
 - [x] Agedb-30
 - [x] CFP-FP
@@ -106,3 +104,4 @@
 1. <https://github.com/TreB1eN/InsightFace_Pytorch>
 2. https://github.com/ronghuaiyang/arcface-pytorch
 3. https://github.com/wy1iu/DCNets
+
