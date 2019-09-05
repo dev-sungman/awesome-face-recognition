@@ -47,26 +47,21 @@
 ### Datasets
 
 **- Training**
-
 - [x] Faces-emore
-- [x] VGGFace2
+- [x] VGGFace2  
 
-**- Evaluation Protocol**
-
+**- Evaluation**
 - [x] LFW
 - [x] Agedb-30
-- [x] cfp-fp
+- [x] CFP-FP
 
 
 
-### Implemented Networks & Loss
+### Implemented Networks
 
-- [ ] [CVPR 2015] Facenet - Triplet loss 
-- [ ] [ECCV 2016] A Discriminative Feature Learning Approach for Deep Face Recognition - Center loss
-- [ ] [CVPR 2017] Sphereface - A-Softmax loss
-- [ ] [CVPR 2018] Cosface - Large margin cosine loss
-- [ ] [CVPR 2018] Ring loss - Ring loss
-- [x] [CVPR 2019] Arcface - Cosine margin loss
+- [ ] [CVPR 2018] Decoupled Networks
+- [x] [CVPR 2019] Arcface 
+- [ ] [CVPR 2019] Regularface
 
 
 
@@ -84,12 +79,23 @@
    pip install -r requirements.txt
    ```
 
+      
+   
 
 2. Download train, test datasets  
-   ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )
+   ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )  
 
 3. Let's train  
    `python train.py --train_root [your data root] --epochs [epochs] --batch_size [batch_size] --save_root [root for saving weights, log file]`
+
+
+
+### Modules (TO DO)
+
+- [ ] Feature Visualization Module
+- [ ] Simple Test GUI (face registration, face detection, face recognition)
+
+
 
 
 
@@ -97,3 +103,5 @@
 
 1. <https://github.com/TreB1eN/InsightFace_Pytorch>
 2. https://github.com/ronghuaiyang/arcface-pytorch
+3. https://github.com/wy1iu/DCNets
+
