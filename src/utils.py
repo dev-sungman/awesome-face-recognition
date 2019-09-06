@@ -1,4 +1,6 @@
 import os
+import bcolz
+import numpy as np
 
 def make_dir(input_path):
     try:
@@ -36,3 +38,14 @@ def separate_bn_paras(modules):
             else:
                 paras_wo_bn.extend([*layer.parameters()])
     return paras_only_bn, paras_wo_bn
+
+def get_val_pair(path, name):
+    carray = bcolz.carray(rootdir = path/name, mode='r')
+    issame = np.load(path/'{}_list.npy'.format(name))
+    return carray, issame
+
+def get_val_data(data_path):
+    agedb_30, agedb_30_issame = get_val_pair(data_path, 'agedb_30')
+    cfp_fp, cfp_fp_issame = get_val_pair(data_path, 'cfp_fp')
+    lfw, lfw_issame = get_val_pair(data_path, 'lfw')
+    return agedb_30, cfp_fp, lfw, agedb_30_issame, cfp_fp_issame, lfw_issame

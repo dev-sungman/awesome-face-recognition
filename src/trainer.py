@@ -1,10 +1,10 @@
-from src.data_handler import FaceLoader, get_val_data
-from src.verification import *
 from src.utils import *
+from src.verification import *
 from torch.optim import lr_scheduler
 
 from model.resnet import resnet18, resnet50
 from model.arcface import ArcMarginProduct
+
 
 import torch
 from torch import optim
@@ -40,7 +40,7 @@ class FaceTrainer:
             , lr=0.1, momentum=0.9)
 
         
-        self.exp_lr_scheduler = lr_scheduler.MultiStepLR(self.optimizer, milestones=[3, 6, 10], gamma=0.1)
+        self.exp_lr_scheduler = lr_scheduler.MultiStepLR(self.optimizer, milestones=[1, 4, 7], gamma=0.1)
         
         self.agedb_30, self.cfp_fp, self.lfw, self.agedb_30_pair, self.cfp_fp_pair, self.lfw_pair = get_val_data(Path('data/eval/'))
         self.writer = SummaryWriter(log_dir)
