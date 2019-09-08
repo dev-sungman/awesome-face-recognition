@@ -35,8 +35,8 @@ class FaceTrainer:
         self.backbone = resnet50().to(self.device)
         self.head = ArcMarginProduct(embedding_size, self.class_num, 32).to(self.device)
         self.optimizer = optim.SGD([
-            {'params' : self.backbone.parameters(), 'weight_decay': 5e-4},
-            {'params' : self.head.parameters(), 'weight_decay': 4e-4}]
+            {'params' : self.backbone.parameters()},
+            {'params' : self.head.parameters()}], weight_decay=5e-4
             , lr=0.1, momentum=0.9)
 
         
@@ -62,14 +62,13 @@ class FaceTrainer:
                 imgs = imgs.to(self.device)
                 labels = labels.to(self.device)
                 
-                self.optimizer.zero_grad()
-                
                 embeddings = self.backbone(imgs)
                 thetas = self.head(embeddings, labels)
 
                 criterion = nn.CrossEntropyLoss()
                 loss = criterion(thetas, labels)
                 
+                self.optimizer.zero_grad()
                 loss.backward()
 
                 self.optimizer.step()
@@ -94,16 +93,17 @@ class FaceTrainer:
                     acc, best_thresh = self.evaluate(self.cfp_fp, self.cfp_fp_pair, self.embedding_size)
                     self.board_val('cfp_fp', acc, best_thresh)
                     print("[CFP-FP] acc: %0.4f\t best_thresh: %0.4f" %(acc, best_thresh))
-                    
-                
-                if epoch % 10 == 0 and epoch != 0:
-                    torch.save(self.backbone.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
-                
                 
                 print("[Epoch: %d\tIter: [%d/%d]\tLoss: %0.4f]" %(epoch, print_step, len(self.train_loader), loss.item()))
 
                 self.step += 1
                 print_step += 1
+                    
+                
+            if epoch % 10 == 0 and epoch != 0:
+                torch.save(self.backbone.state_dict(), self.model_dir + '/' + str(self.step) + '.pth')
+                
+                
 
     def evaluate(self, carray, issame, embedding_size, nrof_folds=5, tta=False):
         self.backbone.eval()
