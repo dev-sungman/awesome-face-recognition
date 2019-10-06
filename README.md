@@ -4,8 +4,6 @@
 
 
 
-
-
 ## Papers (novel loss function)
 
 | Conf.    | Title                                                        | Images   | LFW(%) | YTF(%) | Link |
@@ -19,8 +17,6 @@
 | 19, CVPR | [AdaptiveFace: Adaptive Margin and Sampling for Face Recognition](http://www.cbsr.ia.ac.cn/users/xiangyuzhu/papers/2019adaptiveface.pdf) | 5M       | 99.62  | -      |      |
 | 19, CVPR | [ArcFace: Additive Angular Margin Loss for Deep Face Recognition](https://arxiv.org/pdf/1801.07698.pdf) | WebFace  | 99.53  | -      |      |
 | 19, CVPR | [RegularFace: Deep Face Recognition via Exclusive Regularization](http://mftp.mmcheng.net/Papers/19cvprRegularFace.pdf) | WebFace  | 99.33  | 94.4   |      |
-
-  
 
   
 
@@ -48,7 +44,8 @@
 
 **- Training**
 - [x] Faces-emore
-- [x] VGGFace2  
+
+  
 
 **- Evaluation**
 - [x] LFW
@@ -81,7 +78,6 @@
 
       
    
-
 2. Download train, test datasets  
    ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )  
 
@@ -92,6 +88,7 @@
 
 ### Modules (TO DO)
 
+- [ ] Decoupled Operators
 - [ ] Feature Visualization Module
 - [ ] Simple Test GUI (face registration, face detection, face recognition)
 
