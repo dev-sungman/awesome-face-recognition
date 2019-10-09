@@ -13,6 +13,9 @@ import os
 
 def get_val_pair(path, name):
     carray = bcolz.carray(rootdir = path/name, mode='r')
+
+
+
     issame = np.load(path/'{}_list.npy'.format(name))
     return carray, issame
 
@@ -32,7 +35,7 @@ class FaceLoader:
     def get_loader(self, img_size=[112, 112]):
         transform = transforms.Compose([
             transforms.Resize(img_size),
-            transforms.RandomHorizontalFlip(),
+            #transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
             ])
