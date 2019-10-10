@@ -1,6 +1,9 @@
 # Awesome Face Recognition
 
 * For reviewing and implementing of recent face recognition papers.
+* Paper review will be updated.
+* Add google drive link for sharing my presentation file about face recognition paper.
+  (https://drive.google.com/drive/folders/1CEbBRLORD03BZJfekhRJF8tjzloHmOHa?usp=sharing)
 
 
 
