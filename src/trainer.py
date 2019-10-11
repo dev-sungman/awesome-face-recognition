@@ -38,13 +38,13 @@ class FaceTrainer:
         print('backbone: ', backbone)
         if backbone == 'vgg':
             self.backbone = vgg19().to(self.device)
-            self.margin = 15
+            self.margin = 30
 
         elif backbone == 'resnet':
             self.backbone = resnet50().to(self.device)
             self.margin = 10
         
-        self.head = ArcMarginProduct(embedding_size, self.class_num, 10).to(self.device)
+        self.head = ArcMarginProduct(embedding_size, self.class_num, self.margin).to(self.device)
         
         self.optimizer = optim.SGD([
             {'params' : self.backbone.parameters()},
