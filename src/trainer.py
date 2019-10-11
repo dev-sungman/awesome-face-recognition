@@ -38,7 +38,7 @@ class FaceTrainer:
         print('backbone: ', backbone)
         if backbone == 'vgg':
             self.backbone = vgg19().to(self.device)
-            self.margin = 30
+            self.margin = 15
 
         elif backbone == 'resnet':
             self.backbone = resnet50().to(self.device)
@@ -61,8 +61,6 @@ class FaceTrainer:
         self.board_loss_every = len(self.train_loader) // 5
         self.evaluate_every = len(self.train_loader) // 2
         self.save_every = len(self.train_loader) // 1
-        
-        #print("board_frequent: ", self.board_loss_every, "eval_frequent: ", self.evaluate_every, "save_frequent: ", self.save_every)
 
     def train(self, epochs):
         self.backbone.train()
