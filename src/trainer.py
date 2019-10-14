@@ -35,16 +35,16 @@ class FaceTrainer:
         
         print('class number: ', self.class_num)
         
-        print('backbone: ', backbone)
         if backbone == 'vgg':
             self.backbone = vgg19().to(self.device)
-            self.margin = 15
+            self.margin = 10
 
         elif backbone == 'resnet':
             self.backbone = resnet50().to(self.device)
-            self.margin = 10
+            self.margin = 15
         
         self.head = ArcMarginProduct(embedding_size, self.class_num, self.margin).to(self.device)
+        print('backbone: ', backbone)
         
         self.optimizer = optim.SGD([
             {'params' : self.backbone.parameters()},
@@ -52,19 +52,19 @@ class FaceTrainer:
             , lr=0.1, momentum=0.9)
 
         
-        self.exp_lr_scheduler = lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.1)
+        #self.exp_lr_scheduler = lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.1)
         
         self.agedb_30, self.cfp_fp, self.lfw, self.agedb_30_pair, self.cfp_fp_pair, self.lfw_pair = get_val_data(Path('data/eval/'))
         self.writer = SummaryWriter(log_dir)
 
         self.print_preq = 100
         self.board_loss_every = len(self.train_loader) // 5
-        self.evaluate_every = len(self.train_loader) // 2
+        self.evaluate_every = len(self.train_loader) // 5
         self.save_every = len(self.train_loader) // 1
 
     def train(self, epochs):
         self.backbone.train()
-        self.exp_lr_scheduler.step()
+        #self.exp_lr_scheduler.step()
 
         running_loss = 0.
         for epoch in range(epochs):
@@ -91,7 +91,19 @@ class FaceTrainer:
                     loss_board = running_loss / self.board_loss_every
                     self.writer.add_scalar('train_loss', loss_board, self.step)
                     running_loss = 0.
-                     
+                
+                if self.step == 5000:
+                    for param_group in self.optimizer.param_groups:
+                        param_group['lr'] /= 10
+                
+                if self.step == 15000:
+                    for param_group in self.optimizer.param_groups:
+                        param_group['lr'] /= 10
+
+                if self.step == 25000:
+                    for param_group in self.optimizer.param_groups:
+                        param_group['lr'] /= 10
+                
                 if self.step % self.evaluate_every == 0 and self.step != 0:
                     
                     self.backbone.eval()
