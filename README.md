@@ -1,5 +1,24 @@
 # Awesome Face Recognition
 
+[2019.10.14 - Debugging Log] 
+
+* ArcFace
+  * In training phase, I am trying to setting some parameter (feature_scale in ArcFace).
+    (If the parameter is not set properly, the loss value changes to NaN)
+
+* Decoupled Network
+  * I am trying to implementation DecoupledNetwork on https://github.com/ChoSungMan/DCNets-pytorch
+  * If the test is done, I will merge the two repos into one.
+    
+* RegularFace
+  * Will be updated..
+
+---
+
+
+
+
+
 * For reviewing and implementing of recent face recognition papers.
 * Paper review will be updated.
 * Add google drive link for sharing my presentation file about face recognition paper.
