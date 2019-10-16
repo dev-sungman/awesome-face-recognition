@@ -41,10 +41,10 @@ class FaceTrainer:
 
         elif backbone == 'resnet':
             self.backbone = resnet50().to(self.device)
-            self.margin = 15
+            self.margin = 10
         
         self.head = ArcMarginProduct(embedding_size, self.class_num, self.margin).to(self.device)
-        print('backbone: ', backbone)
+        print('backbone: ', backbone, 'margin: ', self.margin)
         
         self.optimizer = optim.SGD([
             {'params' : self.backbone.parameters()},
@@ -92,15 +92,15 @@ class FaceTrainer:
                     self.writer.add_scalar('train_loss', loss_board, self.step)
                     running_loss = 0.
                 
-                if self.step == 5000:
-                    for param_group in self.optimizer.param_groups:
-                        param_group['lr'] /= 10
-                
                 if self.step == 15000:
                     for param_group in self.optimizer.param_groups:
                         param_group['lr'] /= 10
-
+                
                 if self.step == 25000:
+                    for param_group in self.optimizer.param_groups:
+                        param_group['lr'] /= 10
+
+                if self.step == 30000:
                     for param_group in self.optimizer.param_groups:
                         param_group['lr'] /= 10
                 
