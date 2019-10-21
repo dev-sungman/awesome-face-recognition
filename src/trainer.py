@@ -37,7 +37,7 @@ class FaceTrainer:
         
         if backbone == 'vgg':
             self.backbone = vgg19().to(self.device)
-            self.margin = 10
+            self.margin = 5
 
         elif backbone == 'resnet':
             self.backbone = resnet50().to(self.device)
