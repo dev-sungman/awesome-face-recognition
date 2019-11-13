@@ -2,10 +2,6 @@
 
 [2019.10.14 - Debugging Log] 
 
-* ArcFace
-  * In training phase, I am trying to setting some parameter (feature_scale in ArcFace).
-    (If the parameter is not set properly, the loss value changes to NaN)
-
 * Decoupled Network
   * I am trying to implementation DecoupledNetwork on https://github.com/ChoSungMan/DCNets-pytorch
   * If the test is done, I will merge the two repos into one.
@@ -54,8 +50,6 @@
    pip install -r requirements.txt
    ```
 
-      
-   
 2. Download train, test datasets  
    ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )  
 
