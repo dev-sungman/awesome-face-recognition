@@ -4,6 +4,7 @@ from torch.optim import lr_scheduler
 
 from model.resnet import resnet18, resnet50
 from model.arcface import ArcMarginProduct
+from model.regularface import RegularFace
 from model.vgg import vgg19
 
 import torch
@@ -23,7 +24,7 @@ from pathlib import Path
 from torchsummary import summary
 
 class FaceTrainer:
-    def __init__(self, device, dataloader, backbone, head, log_dir, model_dir, batch_size, embedding_size=512):
+    def __init__(self, device, dataloader, backbone, head, regular, log_dir, model_dir, batch_size, embedding_size=512):
         self.step = 0
         self.device = device
         self.batch_size = batch_size        
@@ -32,27 +33,30 @@ class FaceTrainer:
         self.train_loader, self.class_num = dataloader.get_loader()
         self.model_dir = model_dir
         self.log_dir = log_dir
-        
-        print('class number: ', self.class_num)
+
+        self.regular = regular
         
         if backbone == 'vgg':
             self.backbone = vgg19().to(self.device)
-            self.margin = 5
+            self.scale = 5
 
         elif backbone == 'resnet':
             self.backbone = resnet50().to(self.device)
-            self.margin = 10
+            self.scale = 10
+        else:
+            self.backbone = None
+
         
-        self.head = ArcMarginProduct(embedding_size, self.class_num, self.margin).to(self.device)
-        print('backbone: ', backbone, 'margin: ', self.margin)
+        if head == 'arcface':
+            self.head = ArcMarginProduct(embedding_size, self.class_num, self.scale, regular=self.regular).to(self.device)
+        else:
+            self.head = None
         
+
         self.optimizer = optim.SGD([
             {'params' : self.backbone.parameters()},
             {'params' : self.head.parameters()}], weight_decay=5e-4
             , lr=0.1, momentum=0.9)
-
-        
-        #self.exp_lr_scheduler = lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.1)
         
         self.agedb_30, self.cfp_fp, self.lfw, self.agedb_30_pair, self.cfp_fp_pair, self.lfw_pair = get_val_data(Path('data/eval/'))
         self.writer = SummaryWriter(log_dir)
@@ -61,10 +65,12 @@ class FaceTrainer:
         self.board_loss_every = len(self.train_loader) // 5
         self.evaluate_every = len(self.train_loader) // 5
         self.save_every = len(self.train_loader) // 1
+        
+        print('class number: ', self.class_num)
+        print('backbone: ', backbone, 'scale: ', self.scale)
 
     def train(self, epochs):
         self.backbone.train()
-        #self.exp_lr_scheduler.step()
 
         running_loss = 0.
         for epoch in range(epochs):
@@ -72,7 +78,7 @@ class FaceTrainer:
             for imgs, labels in iter(self.train_loader):
                 imgs = imgs.to(self.device)
                 labels = labels.to(self.device)
-
+                
                 embeddings = self.backbone(imgs)
                 thetas = self.head(embeddings, labels)
 
@@ -121,7 +127,6 @@ class FaceTrainer:
                     #print("[CFP-FP] acc: %0.4f\t best_thresh: %0.4f" %(acc, best_thresh))
                     
                     self.backbone.train()
-                
 
                 if self.step % self.print_preq == 0 and self.step != 0:
                     predicts = np.argmax(thetas.data.cpu().numpy(), axis=1)

@@ -68,19 +68,31 @@ class _NonLocalBlockND(nn.Module):
         batch_size = x.size(0)
 
         g_x = self.g(x).view(batch_size, self.inter_channels, -1)
+        torch.cuda.synchronize()
         g_x = g_x.permute(0, 2, 1)
+        torch.cuda.synchronize()
 
         theta_x = self.theta(x).view(batch_size, self.inter_channels, -1)
+        torch.cuda.synchronize()
         theta_x = theta_x.permute(0, 2, 1)
+        torch.cuda.synchronize()
         phi_x = self.phi(x).view(batch_size, self.inter_channels, -1)
+        torch.cuda.synchronize()
         f = torch.matmul(theta_x, phi_x)
+        torch.cuda.synchronize()
         f_div_C = F.softmax(f, dim=-1)
+        torch.cuda.synchronize()
 
         y = torch.matmul(f_div_C, g_x)
+        torch.cuda.synchronize()
         y = y.permute(0, 2, 1).contiguous()
+        torch.cuda.synchronize()
         y = y.view(batch_size, self.inter_channels, *x.size()[2:])
+        torch.cuda.synchronize()
         W_y = self.W(y)
+        torch.cuda.synchronize()
         z = W_y + x
+        torch.cuda.synchronize()
 
         return z
 

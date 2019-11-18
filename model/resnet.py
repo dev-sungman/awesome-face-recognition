@@ -11,6 +11,7 @@ import torch.utils.model_zoo as model_zoo
 import torch.nn.utils.weight_norm as weight_norm
 import torch.nn.functional as F
 
+from model.non_local_embedded_gaussian import NONLocalBlock2D, NONLocalBlock1D
 
 # __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
 #            'resnet152']
@@ -220,7 +221,6 @@ class ResNetFace(nn.Module):
 
         return x
 
-
 class ResNet(nn.Module):
 
     def __init__(self, block, layers):
@@ -230,10 +230,15 @@ class ResNet(nn.Module):
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.layer1 = self._make_layer(block, 64, layers[0], stride=2)
+        self.non_local1 = NONLocalBlock2D(64*4)
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
+        self.non_local2 = NONLocalBlock2D(128*4)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
+        self.non_local3 = NONLocalBlock2D(256*4)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
+        self.non_local4 = NONLocalBlock2D(512*4)
         self.fc5 = nn.Linear(512 * 8 * 8, 512)
+        self.non_local5 = NONLocalBlock1D(512)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -268,11 +273,16 @@ class ResNet(nn.Module):
         x = self.relu(x)
 
         x = self.layer1(x)
+        x = self.non_local1(x) #att1
         x = self.layer2(x)
+        x = self.non_local2(x) #att2
         x = self.layer3(x)
+        x = self.non_local3(x) #att3
         x = self.layer4(x)
+        #x = self.non_local4(x)
         x = x.view(x.size(0), -1)
         x = self.fc5(x)
+        #x = self.non_local5(x)
 
         return x
 

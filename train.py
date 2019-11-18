@@ -33,6 +33,9 @@ def parse_arguments(argv):
     # set up training model head
     # TODO: add more network head
     parser.add_argument('--head', type=str, default='arcface', choices=['arcface'])
+
+    # set up regular face head
+    parser.add_argument('--regular', type=str, default='N', choices=['Y', 'N'])
     
     parser.add_argument('--gpu_idx', type=str, default=0)
 
@@ -53,7 +56,7 @@ def main(args):
     
     data_loader = FaceLoader(args.train_root, args.batch_size)
     
-    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, log_dir, model_dir, args.batch_size, args.embedding_size)
+    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, args.regular, log_dir, model_dir, args.batch_size, args.embedding_size)
 
     # train using trainer
     trainer.train(args.epochs)
