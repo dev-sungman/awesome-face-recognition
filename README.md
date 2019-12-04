@@ -1,16 +1,14 @@
 # Awesome Face Recognition
 
-[2019.10.14 - Debugging Log] 
+[2019.12.04 - Debugging Log] 
 
 * Decoupled Network
   * I am trying to implementation DecoupledNetwork on https://github.com/ChoSungMan/DCNets-pytorch
-  * If the test is done, I will merge the two repos into one.
-    
-* RegularFace
-  * Will be updated..
+  
 
 ---
-* For reviewing and implementing of recent face recognition papers.
+
+
 
 ## Implementation 
 
@@ -32,7 +30,7 @@
 
 - [ ] [CVPR 2018] Decoupled Networks
 - [x] [CVPR 2019] Arcface 
-- [ ] [CVPR 2019] Regularface
+- [x] [CVPR 2019] Regularface
 
 
 
@@ -45,7 +43,7 @@
    
    source activate [your environment]
    
-   conda install pytorch=0.4.1 cuda90 torchvision -c pytorch
+   conda install pytorch cuda90 torchvision -c pytorch
    
    pip install -r requirements.txt
    ```
@@ -53,14 +51,14 @@
 2. Download train, test datasets  
    ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )  
 
-3. Let's train  
+3. Training 
    `python train.py --train_root [your data root] --epochs [epochs] --batch_size [batch_size] --save_root [root for saving weights, log file]`
 
 
 
 ### Modules (TO DO)
 
-- [ ] Decoupled Operators
+- [x] Decoupled Operators
 - [ ] Feature Visualization Module
 - [ ] Simple Test GUI (face registration, face detection, face recognition)
 
