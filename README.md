@@ -60,13 +60,13 @@
 ### Results
 
 * Accuracy : LFW  (VGG-19)
-  ![img]({{ "./images/lfw-test.png" | relative_url}}){: width="80%" height="80%"}{: .center}  
+  ![img]("./images/lfw-test.png"){: width="80%" height="80%"}  
 
 ​    
 
 
 * Accuracy : AGE-DB30 (VGG-19)
-  ![img]({{ "./images/agedb30-test.png" | relative_url}}){: width="80%" height="80%"}{: .center} 
+  ![img]("./images/agedb30-test.png"){: width="80%" height="80%"} 
 
 
 
