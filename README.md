@@ -1,10 +1,8 @@
 # Awesome Face Recognition
 
-[2019.12.04 - Debugging Log] 
+[2020. 02. 02] 
 
-* Decoupled Network
-  * I am trying to implementation DecoupledNetwork on https://github.com/ChoSungMan/DCNets-pytorch
-  
+* Add Decoupled Network. (in model/dc_module.py)
 
 ---
 
@@ -28,7 +26,7 @@
 
 ### Implemented Networks
 
-- [ ] [CVPR 2018] Decoupled Networks
+- [x] [CVPR 2018] Decoupled Networks
 - [x] [CVPR 2019] Arcface 
 - [x] [CVPR 2019] Regularface
 
@@ -48,19 +46,32 @@
    pip install -r requirements.txt
    ```
 
+   ​    
+   
+
 2. Download train, test datasets  
-   ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )  
+   ( https://github.com/TreB1eN/InsightFace_Pytorch —> 3.1 Data Preparation )   
 
 3. Training 
    `python train.py --train_root [your data root] --epochs [epochs] --batch_size [batch_size] --save_root [root for saving weights, log file]`
 
 
 
-### Modules (TO DO)
+### Results
 
-- [x] Decoupled Operators
-- [ ] Feature Visualization Module
-- [ ] Simple Test GUI (face registration, face detection, face recognition)
+* Accuracy : LFW  (VGG-19)
+
+![img]({{ "/images/lfw-test.png" | relative_url}}){: width="80%" height="80%"}{: .center}  
+
+​    
+
+
+* Accuracy : AGE-DB30 (VGG-19)
+  ![img]({{ "/images/agedb30-test.png" | relative_url}}){: width="80%" height="80%"}{: .center} 
+
+
+
+
 
 
 

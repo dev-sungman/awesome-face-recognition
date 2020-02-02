@@ -12,6 +12,7 @@ import torch.nn.utils.weight_norm as weight_norm
 import torch.nn.functional as F
 
 from model.non_local_embedded_gaussian import NONLocalBlock2D, NONLocalBlock1D
+from model.dc_module import Conv2d
 
 # __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
 #            'resnet152']

@@ -24,7 +24,7 @@ from pathlib import Path
 from torchsummary import summary
 
 class FaceTrainer:
-    def __init__(self, device, dataloader, backbone, head, regular, log_dir, model_dir, batch_size, embedding_size=512):
+    def __init__(self, device, dataloader, backbone, head, regular, log_dir, model_dir, batch_size, embedding_size, is_decouple):
         self.step = 0
         self.device = device
         self.batch_size = batch_size        
@@ -35,9 +35,11 @@ class FaceTrainer:
         self.log_dir = log_dir
 
         self.regular = regular
-        
+
+        self.is_decouple = is_decouple
+
         if backbone == 'vgg':
-            self.backbone = vgg19().to(self.device)
+            self.backbone = vgg19(is_decouple=self.is_decouple).to(self.device)
             self.scale = 5
 
         elif backbone == 'resnet':

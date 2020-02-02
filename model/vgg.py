@@ -6,7 +6,7 @@ import numpy as np
 import math
 
 from model.non_local_embedded_gaussian import NONLocalBlock2D
-
+from model.dc_module import Conv2d
 __all__ = ['VGG', 'vgg16', 'vgg19',]
 
 cfg = {
@@ -15,13 +15,15 @@ cfg = {
     }
 
 class VGG(nn.Module):
-    def __init__(self, features, init_weights=True, embedding_size=512):
+    def __init__(self, features, init_weights=True, embedding_size=512, is_decouple=False):
         super(VGG, self).__init__()
         self.features = features
         self.non_local = NONLocalBlock2D(512)
         self.avgpool = nn.AdaptiveAvgPool2d((1,1))
         self.fc = nn.Linear(512, embedding_size)
         
+        self.is_decouple = is_decouple
+
         if init_weights:
             self._initialize_weights()
 
@@ -59,7 +61,11 @@ def make_layers(cfg, batch_norm=False):
         if v == 'M':
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
         else:
-            conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
+            if self.is_decouple:
+                conv2d = Conv2d(in_channels, v, k_size=3, padding=1, magnitude='ball')
+            else:
+                conv2d = nn.Conv2d(in_channels, v, kernel_size=3, padding=1)
+
             if batch_norm:
                 layers += [conv2d, nn.BatchNorm2d(v), nn.PReLU(v)]
             else:

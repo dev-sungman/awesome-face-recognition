@@ -37,6 +37,9 @@ def parse_arguments(argv):
     # set up regular face head
     parser.add_argument('--regular', type=str, default='N', choices=['Y', 'N'])
     
+    # se up decouple mode
+    parser.add_argument('--decouple', type=bool, default=False)
+
     parser.add_argument('--gpu_idx', type=str, default=0)
 
     return parser.parse_args(argv)
@@ -56,7 +59,7 @@ def main(args):
     
     data_loader = FaceLoader(args.train_root, args.batch_size)
     
-    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, args.regular, log_dir, model_dir, args.batch_size, args.embedding_size)
+    trainer = FaceTrainer(device, data_loader, args.backbone, args.head, args.regular, log_dir, model_dir, args.batch_size, args.embedding_size, args.decouple)
 
     # train using trainer
     trainer.train(args.epochs)
